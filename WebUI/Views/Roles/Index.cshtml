@@ -1,0 +1,29 @@
+﻿@model IEnumerable<WebUI.Models.ApplicationRole>
+
+@{
+    ViewBag.Title = "Роли";
+}
+
+<h2>Роли</h2>
+<table class="table">
+    <tr>
+        <th>Название</th>
+        <th>Описание</th>
+        <th></th>
+    </tr>
+
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td>@item.Name</td>
+            <td>@item.Description</td>
+            <td>
+                @Html.ActionLink("Редактировать", "Edit", new {id = item.Id}) |
+                @Html.ActionLink("Удалить", "Delete", new {id = item.Id}) |
+                @Html.ActionLink("Добавить нового пользователя", "AddUserInRole", new { id = item.Id }) | 
+                @Html.ActionLink("Список пользователей", "RoleUsersList", new { id = item.Id })
+            </td>
+        </tr>
+    }
+</table>
+@Html.ActionLink("Создать", "Create")
