@@ -1,4 +1,7 @@
 ﻿@model WebUI.Models.EditRoleModel
+@{
+    ViewBag.Title = "Редактирование роли";
+}
 
 <h2>Редактирование роли</h2>
 
@@ -9,8 +12,8 @@
     <div>
         @Html.ValidationSummary(true, "")
         @Html.HiddenFor(model => model.Id)
-        <p>Название:  @Html.EditorFor(model => model.Name)</p>
-        <p>Описание: @Html.EditorFor(model => model.Description)</p>
+        <p>@Html.DisplayNameFor(model=>model.Name):  @Html.EditorFor(model => model.Name)</p>
+        <p>@Html.DisplayNameFor(model => model.Description): @Html.EditorFor(model => model.Description)</p>
         <p><input type="submit" value="Изменить" /></p>
     </div>
 }

@@ -1,5 +1,7 @@
 ﻿@model WebUI.Models.CreateRoleModel
-
+@{
+    ViewBag.Title = "Добавление роли";
+}
 <h2>Добавление роли</h2>
 
 @using (Html.BeginForm())
@@ -8,8 +10,8 @@
 
     <div>
         @Html.ValidationSummary(true, "")
-        <p>Название:  @Html.EditorFor(model => model.Name)</p>
-        <p>Описание: @Html.EditorFor(model => model.Description)</p>
+        <p>@Html.DisplayNameFor(model => model.Name):  @Html.EditorFor(model => model.Name)</p>
+        <p>@Html.DisplayNameFor(model => model.Description): @Html.EditorFor(model => model.Description)</p>
         <p><input type="submit" value="Добавить" /></p>
     </div>
 }

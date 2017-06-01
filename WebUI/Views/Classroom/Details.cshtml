@@ -1,0 +1,88 @@
+﻿@model WebUI.Models.Classroom
+
+@{
+    ViewBag.Title = Model.Name;
+}
+
+
+<div>
+    <hr/>
+    <h4>
+        @Html.DisplayNameFor(model => model.Name) : @Html.DisplayFor(model => model.Name)
+    </h4>
+    <h4>
+        @Html.DisplayNameFor(model => model.Teacher) : @Html.DisplayFor(model => model.Teacher.Name)
+    </h4>
+    <hr/>
+    <h4>
+       Список лекций
+    </h4>
+    @if (ViewContext.HttpContext.User.IsInRole("Teacher") || ViewContext.HttpContext.User.IsInRole("Admin"))
+    {
+        <h4>@Html.ActionLink("Добавить лекцию", "Create", "Lecture", new { classroomId = Model.Id, returnUrl = Request.Url?.ToString() }, null)</h4>
+    }
+    
+   
+   
+
+
+    <table class="table">
+        @foreach (var item in Model.Lectures)
+        {
+            <tr>
+                <td>@Html.DisplayFor(modelItem => item.Theme)</td>
+                <td>@Html.DisplayFor(modelItem => item.Description)</td>
+                @if (ViewContext.HttpContext.User.IsInRole("Teacher") || ViewContext.HttpContext.User.IsInRole("Admin"))
+                {
+                    <td>
+                        @Html.ActionLink("Просмотреть лекцию", "Details", "Lecture", new { id = item.Id }, null)
+                        | @Html.ActionLink("Редактировать лекцию", "Edit", "Lecture", new { id = item.Id, returnUrl = Request.Url?.ToString() }, null)
+                        | @Html.ActionLink("Удалить лекцию", "Delete", "Lecture", new { id = item.Id, returnUrl = Request.Url?.ToString() }, null)
+                    </td>
+                }
+                else
+                {
+                    <td>
+                        @Html.ActionLink("Просмотреть лекцию", "Details", "Lecture", new { id = item.Id }, null)
+                    </td>
+                }
+            
+            </tr>
+        }
+    </table>
+    <h4>
+        Список задач
+    </h4>
+    @if (ViewContext.HttpContext.User.IsInRole("Teacher") || ViewContext.HttpContext.User.IsInRole("Admin"))
+    {
+        <h4>
+            @Html.ActionLink("Добавить задачу", "Create", "Task", new { classroomId = Model.Id, returnUrl = Request.Url?.ToString() }, null)
+        </h4>
+    }
+
+    
+    <table class="table">
+        @foreach (var item in Model.Tasks)
+        {
+            <tr>
+                <td>@Html.DisplayFor(modelItem => item.Title)</td>
+@if (ViewContext.HttpContext.User.IsInRole("Teacher") || ViewContext.HttpContext.User.IsInRole("Admin"))
+{
+    <td>
+        @Html.ActionLink("Просмотреть задачу", "Details", "Task", new { id = item.Id }, null)
+        | @Html.ActionLink("Редактировать задачу", "Edit", "Task", new { id = item.Id, returnUrl = Request.Url?.ToString() }, null)
+        | @Html.ActionLink("Удалить задачу", "Delete", "Task", new { id = item.Id, returnUrl = Request.Url?.ToString() }, null)
+    </td>
+}
+else
+{
+    <td>
+        @Html.ActionLink("Просмотреть задачу", "Details", "Task", new { id = item.Id }, null)
+    </td>
+}
+           
+            </tr>
+        }
+    </table>
+
+</div>

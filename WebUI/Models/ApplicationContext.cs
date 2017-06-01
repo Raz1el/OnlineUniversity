@@ -13,6 +13,7 @@ namespace WebUI.Models
 
         public static ApplicationContext Create()
         {
+
             return new ApplicationContext();
         }
     }

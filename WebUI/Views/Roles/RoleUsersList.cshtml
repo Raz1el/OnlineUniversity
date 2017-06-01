@@ -1,10 +1,10 @@
 ﻿@model IEnumerable<WebUI.Models.ApplicationUser>
 
 @{
-    ViewBag.Title = "RoleUsersList";
+    ViewBag.Title = "Список пользователь";
 }
 
-<h2>RoleUsersList</h2>
+<h2>Список пользователь для роли "@ViewBag.RoleName"</h2>
 
 
 <table class="table">
@@ -33,7 +33,7 @@
             @Html.DisplayFor(modelItem => item.Group)
         </td>
         <td>
-            @Html.ActionLink("Delete", "DeleteUserFromRole", new {  userId = item.Email  })
+            @Html.ActionLink("Удалить", "DeleteUserFromRole", new {  userEmail = item.Email , role = @ViewBag.RoleName })
         </td>
     </tr>
 }

@@ -1,0 +1,37 @@
+﻿@model IEnumerable<WebUI.Models.Solution>
+
+@{
+    ViewBag.Title = "Решения";
+}
+
+<h2>Решения для задачи "@ViewBag.TaskTitle"</h2>
+
+
+<table class="table">
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => model.SolutionCreator.Group)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.SolutionCreator.Name)
+        </th>
+        <th></th>
+    </tr>
+
+@foreach (var item in Model) {
+    <tr>
+        <td>
+            @Html.DisplayFor(modelItem => item.SolutionCreator.Group)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.SolutionCreator.Name)
+        </td>
+        <td>
+            @Html.ActionLink("Редактировать", "Edit","Solution", new { id = item.Id, returnUrl = Request.Url }, null) |
+            @Html.ActionLink("Просмотреть", "Details","Solution", new { id = item.Id, returnUrl = Request.Url }, null) |
+            @Html.ActionLink("Удалить", "Delete","Solution", new { id=item.Id,returnUrl=Request.Url },null)
+        </td>
+    </tr>
+}
+
+</table>

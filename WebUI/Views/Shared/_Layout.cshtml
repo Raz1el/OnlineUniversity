@@ -21,8 +21,6 @@
             <div class="navbar-collapse collapse">
                 <ul class="nav navbar-nav">
                     <li>@Html.ActionLink("Главная", "Index", "Home")  <li />
-                    <li>@Html.ActionLink("Классы", "Index", "Classroom")
-                    <li />
                     @if (ViewContext.HttpContext.User.IsInRole("Admin"))
                     {
 
@@ -31,25 +29,44 @@
                             <ul class="dropdown-menu" role="menu">
                                 <li>@Html.ActionLink("Пользователи", "Index", "Account")</li>
                                 <li>@Html.ActionLink("Роли", "Index", "Roles")</li>
-
+                                <li>@Html.ActionLink("Классы", "Index", "Classroom")</li>
+                                <li>@Html.ActionLink("Лекции","Index","Lecture") </li >
+                                <li>@Html.ActionLink("Задачи", "Index", "Task") </li>
+                                <li>@Html.ActionLink("Решения", "Index", "Solution") </li>
                             </ul>
                         </li>
-                    }
-                    @if (Request.IsAuthenticated)
+                    } 
+
+                    @if (ViewContext.HttpContext.User.IsInRole("Teacher"))
                     {
+
+                        <li class="dropdown">
+                            <a class="dropdown-toggle" role="button" aria-expanded="false" href="#" data-toggle="dropdown">Меню преподавателя<span class="caret"></span></a>
+                            <ul class="dropdown-menu" role="menu">
+                                <li>@Html.ActionLink("Создать класс", "Create", "Classroom", new { returnUrl = Request.Url }, null)</li>
+                                <li>@Html.ActionLink("Мои классы", "ShowClassrooms", "Classroom", new { returnUrl = Request.Url }, null)</li>
+                            </ul>  </li>
+                    }                    
+                   @if (ViewContext.HttpContext.User.IsInRole("Student"))
+                   {
 
                         <li class="dropdown">
                             <a class="dropdown-toggle" role="button" aria-expanded="false" href="#" data-toggle="dropdown">Меню<span class="caret"></span></a>
                             <ul class="dropdown-menu" role="menu">
                                 <li>@Html.ActionLink("Редактировать личные данные", "Edit", "Account")</li>
+                                <li>@Html.ActionLink("Список классов в которых вы учитесь", "ShowClassrooms", "Classroom", new { returnUrl = Request.Url }, null)</li>
                             </ul>
                         </li>
 
 
+                  
+                    }
+
+                    @if (User.Identity.IsAuthenticated)
+                    {
                         <li>@Html.ActionLink("Выйти", "Logout", "Account")</li>
                     }
-                    else
-                    {
+                    else {
                         <li>@Html.ActionLink("Регистрация", "Register", "Account")</li>
                         <li>@Html.ActionLink("Вход", "Login", "Account")</li>
 

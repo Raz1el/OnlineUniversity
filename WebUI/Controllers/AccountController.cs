@@ -19,11 +19,20 @@ namespace WebUI.Controllers
         private ApplicationUserManager UserManager { get { return HttpContext.GetOwinContext().GetUserManager<ApplicationUserManager>();}    }
         private IAuthenticationManager AuthenticationManager  { get  { return HttpContext.GetOwinContext().Authentication; } }
 
-
+        [Authorize(Roles = "Admin")]
         public ActionResult Index()
         {
-            var users = UserManager.Users;
-            return View(users);
+            try
+            {
+                var users = UserManager.Users;
+                return View(users);
+            }
+            catch (Exception e)
+            {
+
+                return RedirectToAction("Index", "Error", new {error = e.Message});
+            }
+          
         }
 
 
@@ -35,25 +44,35 @@ namespace WebUI.Controllers
         [HttpPost]
         public ActionResult Register(RegisterModel model)
         {
-            if (ModelState.IsValid)
+
+
+
+            try
             {
-                ApplicationUser user = new ApplicationUser { UserName = model.Email, Email = model.Email, Group = model.Group,Name = model.Name};
-                    IdentityResult result = UserManager.Create(user, model.Password);
-                    if (result.Succeeded)
+                if (ModelState.IsValid)
+                {
+                    ApplicationUser user = new ApplicationUser { UserName = model.Email, Email = model.Email, Group = model.Group, Name = model.Name };
+                    IdentityResult createUser = UserManager.Create(user, model.Password);
+                    if (createUser.Succeeded)
                     {
+                        UserManager.AddToRole(user.Id, "Student");
                         return RedirectToAction("Login", "Account");
                     }
                     else
                     {
-                        foreach (string error in result.Errors)
+                        foreach (string error in createUser.Errors)
                         {
                             ModelState.AddModelError("", error);
                         }
                     }
+                }
+                return View(model);
             }
-            return View(model);
+            catch (Exception e)
+            {
 
-
+                return RedirectToAction("Index", "Error", new { error = e.Message });
+            }
         }
 
         public ActionResult Login(string returnUrl)
@@ -66,29 +85,37 @@ namespace WebUI.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Login(LoginModel model, string returnUrl)
         {
-            if (ModelState.IsValid)
+            try
             {
-                ApplicationUser user = UserManager.Find(model.Email,model.Password);
-                if (user == null)
+                if (ModelState.IsValid)
                 {
-                    ModelState.AddModelError("", "Неверный логин или пароль.");
+                    ApplicationUser user = UserManager.Find(model.Email, model.Password);
+                    if (user == null)
+                    {
+                        ModelState.AddModelError("", "Неверный логин или пароль.");
+                    }
+                    else
+                    {
+                        Login(user);
+                        if (string.IsNullOrEmpty(returnUrl))
+                            return RedirectToAction("Index", "Home");
+                        return Redirect(returnUrl);
+                    }
                 }
-                else
-                {
-                    Login(user);
-                    if (string.IsNullOrEmpty(returnUrl))
-                        return RedirectToAction("Index", "Home");
-                    return Redirect(returnUrl);
-                }
+                ViewBag.returnUrl = returnUrl;
+                return View(model);
             }
-            ViewBag.returnUrl = returnUrl;
-            return View(model);
+            catch (Exception e)
+            {
+
+                return RedirectToAction("Index", "Error", new { error = e.Message });
+            }
         }
 
         private void Login(ApplicationUser user)
         {
             ClaimsIdentity identity = UserManager.CreateIdentity(user,
-                                                        DefaultAuthenticationTypes.ApplicationCookie);
+                                                      DefaultAuthenticationTypes.ApplicationCookie);
             AuthenticationManager.SignOut();
             AuthenticationManager.SignIn(new AuthenticationProperties
             {
@@ -96,80 +123,120 @@ namespace WebUI.Controllers
             }, identity);
         }
 
+        [Authorize(Roles = "Teacher, Admin, Student")]
         public ActionResult Logout()
         {
-            AuthenticationManager.SignOut();
-            return RedirectToAction("Login");
+            try
+            {
+                AuthenticationManager.SignOut();
+                return RedirectToAction("Login");
+            }
+            catch (Exception e)
+            {
+
+                return RedirectToAction("Index", "Error", new { error = e.Message });
+            }
         }
 
 
-
+        [Authorize(Roles = "Admin")]
         public ActionResult Delete(string id)
         {
-            ApplicationUser user = UserManager.FindById(id);
-            if (user != null)
+
+            try
             {
-                UserManager.Delete(user);
+                ApplicationUser user = UserManager.FindById(id);
+                if (user != null)
+                {
+                    UserManager.Delete(user);
+                }
+                return RedirectToAction("Index");
             }
-            return RedirectToAction("Index");
+            catch (Exception e)
+            {
+
+                return RedirectToAction("Index", "Error", new { error = e.Message });
+            }
+
+
+
+      
         }
 
 
- 
-
+        [Authorize(Roles = "Teacher, Admin, Student")]
         public ActionResult Edit()
         {
-            var user = UserManager.FindByEmail(User.Identity.Name);
-
-            if (user != null)
+            try
             {
-                var model = new EditUserModel() { Email = user.Email, Group = user.Group, Name = user.Name };
-                return View(model);
+                var user = UserManager.FindByEmail(User.Identity.Name);
+
+                if (user != null)
+                {
+                    var model = new EditUserModel() { Email = user.Email, Group = user.Group, Name = user.Name };
+                    return View(model);
+                }
+                return RedirectToAction("Login", "Account");
             }
-            return RedirectToAction("Login", "Account");
+            catch (Exception e)
+            {
+
+                return RedirectToAction("Index", "Error", new { error = e.Message });
+            }
         }
 
+        [Authorize(Roles = "Teacher, Admin, Student")]
         [HttpPost]
         public ActionResult Edit(EditUserModel model)
         {
-            ApplicationUser user =  UserManager.FindByEmail(User.Identity.Name);
-            ApplicationUser userWithNewEmail =  UserManager.FindByEmail(model.Email);
-            if (user != null)
-            {
-                if (userWithNewEmail == null||user.Email==model.Email)
-                {
 
-                    user.Email = model.Email;
-                    user.UserName = model.Email;
-                    user.Name = model.Name;
-                    user.Group = model.Group;
-                    IdentityResult result = UserManager.Update(user);
-                    if (result.Succeeded)
+            try
+            {
+                ApplicationUser user = UserManager.FindByEmail(User.Identity.Name);
+                ApplicationUser userWithNewEmail = UserManager.FindByEmail(model.Email);
+                if (user != null)
+                {
+                    if (userWithNewEmail == null || user.Email == model.Email)
                     {
 
-                        Login(user);
-                        return RedirectToAction("Index", "Home");
+                        user.Email = model.Email;
+                        user.UserName = model.Email;
+                        user.Name = model.Name;
+                        user.Group = model.Group;
+                        IdentityResult result = UserManager.Update(user);
+                        if (result.Succeeded)
+                        {
 
-                       
+                            Login(user);
+                            return RedirectToAction("Index", "Home");
+
+
+                        }
+                        else
+                        {
+                            ModelState.AddModelError("", "Что-то пошло не так!");
+                        }
                     }
                     else
                     {
-                        ModelState.AddModelError("", "Что-то пошло не так!");
+                        ModelState.AddModelError("", "Пользователь с таким именем уже существует!");
                     }
+
+
                 }
                 else
                 {
-                    ModelState.AddModelError("", "Пользователь с таким именем уже существует!");
+                    ModelState.AddModelError("", "Пользователь не найден");
                 }
 
-               
-            }
-            else
-            {
-                ModelState.AddModelError("", "Пользователь не найден");
-            }
+                return View(model);
 
-            return View(model);
+            }
+            catch (Exception e)
+            {
+
+                return RedirectToAction("Index", "Error", new { error = e.Message });
+            }
         }
     }
 }

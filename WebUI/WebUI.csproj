@@ -178,6 +178,7 @@
     <Content Include="scripts\ai.0.15.0-build58334.min.js" />
     <Content Include="scripts\bootstrap.js" />
     <Content Include="scripts\bootstrap.min.js" />
+    <None Include="Properties\PublishProfiles\OnlineUniversity.pubxml" />
     <None Include="scripts\jquery-1.10.2.intellisense.js" />
     <Content Include="scripts\jquery-1.10.2.js" />
     <Content Include="scripts\jquery-1.10.2.min.js" />
@@ -189,8 +190,12 @@
     <Compile Include="App_Start\Startup.cs" />
     <Compile Include="Controllers\AccountController.cs" />
     <Compile Include="Controllers\ClassroomController.cs" />
+    <Compile Include="Controllers\ErrorController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
+    <Compile Include="Controllers\LectureController.cs" />
     <Compile Include="Controllers\RolesController.cs" />
+    <Compile Include="Controllers\SolutionController.cs" />
+    <Compile Include="Controllers\TaskController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
@@ -201,6 +206,22 @@
     <Compile Include="Migrations\201705202146175_SampleMigrations.cs" />
     <Compile Include="Migrations\201705202146175_SampleMigrations.Designer.cs">
       <DependentUpon>201705202146175_SampleMigrations.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201705210846267_Migration1.cs" />
+    <Compile Include="Migrations\201705210846267_Migration1.Designer.cs">
+      <DependentUpon>201705210846267_Migration1.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201705211249204_Migration2.cs" />
+    <Compile Include="Migrations\201705211249204_Migration2.Designer.cs">
+      <DependentUpon>201705211249204_Migration2.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201705211310353_Migration3.cs" />
+    <Compile Include="Migrations\201705211310353_Migration3.Designer.cs">
+      <DependentUpon>201705211310353_Migration3.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201705221648528_Migration4.cs" />
+    <Compile Include="Migrations\201705221648528_Migration4.Designer.cs">
+      <DependentUpon>201705221648528_Migration4.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AddUserInRoleModel.cs" />
@@ -213,12 +234,15 @@
     <Compile Include="Models\EditUserModel.cs" />
     <Compile Include="Models\EditRoleModel.cs" />
     <Compile Include="Models\Classroom.cs" />
+    <Compile Include="Models\InviteUserModel.cs" />
     <Compile Include="Models\Lecture.cs" />
+    <Compile Include="Models\NewLectureModel.cs" />
+    <Compile Include="Models\NewSolutionModel.cs" />
+    <Compile Include="Models\NewTaskModel.cs" />
     <Compile Include="Models\Solution.cs" />
     <Compile Include="Models\Task.cs" />
     <Compile Include="Models\LoginModel.cs" />
     <Compile Include="Models\RegisterModel.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Views\web.config" />
@@ -239,11 +263,30 @@
     <Content Include="Views\Roles\AddUserInRole.cshtml" />
     <Content Include="Views\Classroom\Index.cshtml" />
     <Content Include="Views\Classroom\Create.cshtml" />
+    <Content Include="Views\Classroom\Edit.cshtml" />
+    <Content Include="Views\Classroom\Details.cshtml" />
+    <Content Include="Views\Lecture\Create.cshtml" />
+    <Content Include="Views\Lecture\Index.cshtml" />
+    <Content Include="Views\Lecture\Details.cshtml" />
+    <Content Include="Views\Lecture\Edit.cshtml" />
+    <Content Include="Views\Error\Index.cshtml" />
+    <Content Include="Views\Classroom\ShowClassrooms.cshtml" />
+    <Content Include="Views\Classroom\InviteStudent.cshtml" />
+    <Content Include="Views\Classroom\StudentList.cshtml" />
     <None Include="Views\Roles\Create.cshtml" />
     <None Include="Views\Roles\Edit.cshtml" />
     <None Include="Views\Roles\Index.cshtml" />
     <Content Include="Views\Roles\RoleUsersList.cshtml" />
     <Content Include="Views\Shared\_Layout.cshtml" />
+    <Content Include="Views\Task\Index.cshtml" />
+    <Content Include="Views\Task\Details.cshtml" />
+    <Content Include="Views\Task\Edit.cshtml" />
+    <Content Include="Views\Solution\Index.cshtml" />
+    <Content Include="Views\Solution\Details.cshtml" />
+    <Content Include="Views\Task\Create.cshtml" />
+    <Content Include="Views\Solution\Create.cshtml" />
+    <Content Include="Views\Solution\Edit.cshtml" />
+    <Content Include="Views\Task\ShowSolutions.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
@@ -258,7 +301,20 @@
     <EmbeddedResource Include="Migrations\201705202146175_SampleMigrations.resx">
       <DependentUpon>201705202146175_SampleMigrations.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201705210846267_Migration1.resx">
+      <DependentUpon>201705210846267_Migration1.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201705211249204_Migration2.resx">
+      <DependentUpon>201705211249204_Migration2.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201705211310353_Migration3.resx">
+      <DependentUpon>201705211310353_Migration3.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201705221648528_Migration4.resx">
+      <DependentUpon>201705221648528_Migration4.cs</DependentUpon>
+    </EmbeddedResource>
   </ItemGroup>
+  <ItemGroup />
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
     <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>
